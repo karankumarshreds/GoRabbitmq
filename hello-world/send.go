@@ -22,17 +22,17 @@ func main() {
 	// To send, we must declare a queue for us to send to; then we can publish a message to the queue
 	q, err := ch.QueueDeclare(
 		"hello", // name of the queue 
-		false,   // durable 
-		false,   // delete when unused 
-		false,   // exclusive 
-		false,   // no-wait 
-		nil,     // arguments 
+		false,   // durable : A durable queue only means that the queue definition will survive a server restart, not the messages in it
+		false,   // delete when unused : if set to false, the messages will be lost during the server restart 
+		false,   // exclusive : Exclusive queues are only accessible by the connection that declares them and will be deleted when the connection closes
+		false,   // no-wait : When noWait is true, the queue will assume to be declared on the server
+		nil,     // arguments : No extra arguments provided 
 	)
 	failOnError(err, "Failed to declare a queue")
 
 	err = ch.Publish(
-		"",      // exchange 
-		q.Name,  // routing key
+		"",      // exchange : When you want a single message to be delivered to a single queue, you can publish to the default exchange with the routingKey of the queue name. 
+		q.Name,  // routing key : When you want a single message to be delivered to a single queue, you can publish to the default exchange with the routingKey of the queue name. 
 		false,   // mandatory
 		false,   // immediate
 		amqp.Publishing{
