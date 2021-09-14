@@ -22,7 +22,7 @@ func main() {
 
 	// declare a queue 
 	q, err := ch.QueueDeclare(
-		"hello",
+		"hello", // queue name 
 		false,
 		false,
 		false,
