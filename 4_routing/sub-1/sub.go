@@ -38,10 +38,10 @@ func main() {
 	err = ch.ExchangeDeclare(
 		"direct_logs",
 		"direct",
-		true,
-		false,
-		false,
-		false,
+		true,  // durable if the server restarts 
+		false, // auto-deleted if the server restarts 
+		false, // internal exchanges do not accept the external publishings 
+		false, // no-wait (no-wait declare without confirmation from the server)
 		nil,
 	)
 	failOnError(err, "Unable to declare exchange")
