@@ -17,3 +17,17 @@ Exchange types:
 - topic
 - headers
 - fanout
+
+In case we use **nameless** exchange, it will route messages to the queue _with the name specified by ROUTING_KEY paramater_, if it exists.
+
+```Go
+err = ch.Publish(
+  "",     // exchange
+  q.Name, // routing key
+  false,  // mandatory
+  false,  // immediate
+  amqp.Publishing{
+    ContentType: "text/plain",
+    Body:        []byte(body),
+})
+```

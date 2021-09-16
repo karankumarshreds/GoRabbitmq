@@ -25,7 +25,7 @@ func main() {
 		false,   // durable : A durable queue only means that the queue definition will survive a server restart, not the 
 		         // messages in it. This needs to be done both from the consumer and the provider side 
 		false,   // delete when unused : if set to false, the messages will be lost during the server restart 
-		false,   // exclusive : Exclusive queues are only accessible by the connection that declares them and will be deleted
+		false,   // exclusive : Exclusive queues are only accessible by the connection that declares them AND will be deleted
 		         // when the connection closes
 		false,   // no-wait : When noWait is true, the queue will assume to be declared on the server
 		nil,     // arguments : No extra arguments provided 
