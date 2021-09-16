@@ -25,7 +25,7 @@ These bindings can be summarised as:
 - On the other hand "quick.orange.fox" will only go to the first queue, and "lazy.brown.fox" only to the second.
 - "lazy.pink.rabbit" will be delivered to the second queue only once.
 
-**Really important points: **
+**Really important points:**
 
 What happens if we break our contract and send a message with one or four words, like "orange" or "quick.orange.male.rabbit"? Well, these messages won't match any bindings and will be lost.
 
