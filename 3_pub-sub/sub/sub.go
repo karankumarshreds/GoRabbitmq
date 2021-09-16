@@ -40,7 +40,7 @@ func main() {
 	// bind the exchange with your queue to get messages from it 
 	err = ch.QueueBind(
 		q.Name, // queue name
-		"",     // routing key
+		"",     // routing key left blank because the exchange is of type fanout 
 		"logs", // exchange
 		false,
 		nil,
