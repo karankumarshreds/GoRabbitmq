@@ -49,7 +49,7 @@ func main() {
 	// bind the exchange 
 	err = ch.QueueBind(
 		q.Name,           // name of the queue 
-		"error",          // name of the key
+		"user_created",          // name of the key
 		"direct_logs",    // name of the exchange 
 		false,
 		nil,
@@ -69,7 +69,7 @@ func main() {
 	)
 	failOnError(err, "Unable to consume messages")
 
-	forever := make(chan bool)
+	xyz := make(chan bool)
 
 	go func() {
 		for d := range msgs {
@@ -78,7 +78,7 @@ func main() {
 	}()
 
 	log.Printf(" [*] Waiting for logs. To exit press CTRL+C")
-	<-forever
+	<-xyz
 
 }
 
