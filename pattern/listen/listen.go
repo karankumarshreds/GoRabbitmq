@@ -46,8 +46,8 @@ func (l listener) Listen(queue string, exchange string, topic string) (msgs <-ch
 		false,
 		nil,
 	)
+	returnIfError(err)
 	
-
 	msgs, err = l.Channel.Consume(
 		q.Name,
 		l.consumer,
@@ -57,15 +57,18 @@ func (l listener) Listen(queue string, exchange string, topic string) (msgs <-ch
 		false, // no-wait 
 		nil,   // args 
 	)
-
 	returnIfError(err)
+
+	return msgs, nil	
 	
 }
 
 func returnIfError(err error) (interface{}, error) {
 	if err != nil {
 		return nil, err
-	} 
+	}  else {
+		return nil, nil
+	}
 }
 
 
