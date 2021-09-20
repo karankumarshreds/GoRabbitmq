@@ -13,6 +13,8 @@ import (
 
 const connString = "amqp://guest:guest@localhost:5672/"
 
+
+
 func main() {
 	
 	// dial a connection
