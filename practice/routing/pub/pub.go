@@ -33,6 +33,14 @@ func main() {
 
 	log.Printf("Publishing the message to routing key === %v\n", routingKeyFromArgs(os.Args))
 	// publish the message on the exchange 
+	type ErrorMessage struct {
+		Name string 
+		Age string
+	}
+	msg := ErrorMessage{
+		Name: "Karan Kumar",
+		Age: "27",
+	}
 	ch.Publish(
 		"direct_logs",                        // name of exchange 
 		routingKeyFromArgs(os.Args),          // routing key (info|warning|error)
@@ -40,7 +48,7 @@ func main() {
 		false,                                // immediate 
 		amqp.Publishing{
 			ContentType: "text/plain",
-			Body: []byte(fmt.Sprintln("ERROR MESSAGE 👈")),
+			Body: []byte(fmt.Sprint(msg)),
 		},
 	)
 
