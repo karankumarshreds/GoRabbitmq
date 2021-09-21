@@ -4,14 +4,14 @@ import (
 	"github.com/streadway/amqp"
 )
 
-type listener struct {
+type Listener struct {
 	Channel *amqp.Channel
 	consumer string
 }
 
 // New will create a new instance of listener 
 func New(ch *amqp.Channel, consumer string) listener{
-	return listener{
+	return Listener{
 		Channel: ch,
 		consumer: consumer,
 	}
