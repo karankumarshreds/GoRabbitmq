@@ -22,7 +22,7 @@ func main() {
 	ch, err := conn.Channel()
 	failOnError(err, "Unable to open a channel")
 
-	l := listen.New(ch, "sub_4")
+	l := listen.New(ch)
 	app.listener = &l
 
 	// Add listeners here
