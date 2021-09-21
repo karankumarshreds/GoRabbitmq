@@ -33,18 +33,16 @@ func main() {
 
 	log.Printf("Publishing the message to routing key === %v\n", routingKeyFromArgs(os.Args))
 	// publish the message on the exchange 
-	for i := 0; i < 200; i ++ {
-		ch.Publish(
-			"direct_logs",                        // name of exchange 
-			routingKeyFromArgs(os.Args),          // routing key (info|warning|error)
-			false,                                // mandatory
-			false,                                // immediate 
-			amqp.Publishing{
-				ContentType: "text/plain",
-				Body: []byte(fmt.Sprintf("👉 %v", i)),
-			},
-		)
-	}
+	ch.Publish(
+		"direct_logs",                        // name of exchange 
+		routingKeyFromArgs(os.Args),          // routing key (info|warning|error)
+		false,                                // mandatory
+		false,                                // immediate 
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body: []byte(fmt.Sprintln("ERROR MESSAGE 👈")),
+		},
+	)
 
 }
 

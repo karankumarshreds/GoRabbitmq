@@ -8,33 +8,33 @@ import (
 
 const connString = "amqp://guest:guest@localhost:5672/"
 
+type App struct{
+	listener *listen.Listener
+}
+
 func main() {
-	
+
+	var app App
+
 	conn, err := amqp.Dial(connString)
 	failOnError(err, "Unable to dial a connection")
 
 	ch, err := conn.Channel()
 	failOnError(err, "Unable to open a channel")
 
-	listener := listen.New(ch, "sub_4")
-	
-	msgs, err := listener.Listen(
-		"sub_4_queue",
-		"direct_logs",
-		"error",
-	)
-	failOnError(err, "Unable to listen")
+	l := listen.New(ch, "sub_4")
+	app.listener = &l
 
+	// Add listeners here
+	// ===========================
 	forever := make(chan bool)
-	go func() {
-		for d := range msgs {
-			log.Printf(" [x] %s", d.Body)
-		}
-	}()
-	log.Printf(" [*] Waiting for logs. To exit press CTRL+C")
+	app.ErrorListener()
 	<-forever
+	// ===========================
 
 }
+
+
 
 func failOnError(err error, msg string) {
 	if err != nil {
