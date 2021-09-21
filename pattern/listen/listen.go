@@ -6,18 +6,16 @@ import (
 
 type Listener struct {
 	Channel *amqp.Channel
-	consumer string
 }
 
 // New will create a new instance of listener 
-func New(ch *amqp.Channel, consumer string) listener{
+func New(ch *amqp.Channel) Listener{
 	return Listener{
 		Channel: ch,
-		consumer: consumer,
 	}
 }
 
-func (l listener) Listen(queue string, exchange string, topic string) (msgs <-chan amqp.Delivery, err error) {
+func (l Listener) Listen(queue string, exchange string, topic string) (msgs <-chan amqp.Delivery, err error) {
 	q, err := l.Channel.QueueDeclare(
 		queue,   // queue name 
 		true,    // durable 
@@ -50,7 +48,7 @@ func (l listener) Listen(queue string, exchange string, topic string) (msgs <-ch
 	
 	msgs, err = l.Channel.Consume(
 		q.Name,
-		l.consumer,
+		"",    // consumer name (keeping it unique for identity of listener)
 		true,  // auto-ack
 		false, // exclusive
 		false, // no-local
