@@ -10,14 +10,14 @@ type Listener struct {
 }
 
 // New will create a new instance of listener 
-func New(ch *amqp.Channel, consumer string) listener{
+func New(ch *amqp.Channel, consumer string) Listener{
 	return Listener{
 		Channel: ch,
 		consumer: consumer,
 	}
 }
 
-func (l listener) Listen(queue string, exchange string, topic string) (msgs <-chan amqp.Delivery, err error) {
+func (l Listener) Listen(queue string, exchange string, topic string) (msgs <-chan amqp.Delivery, err error) {
 	q, err := l.Channel.QueueDeclare(
 		queue,   // queue name 
 		true,    // durable 
