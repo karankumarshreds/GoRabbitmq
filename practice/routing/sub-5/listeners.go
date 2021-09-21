@@ -1,15 +1,16 @@
 package main
 
 import (
-	"fmt"
+	// "fmt"
 	"log"
 	"bytes"
 	"encoding/json"
 )
 
+
 type ErrorMessage struct {
-	Name string 
-	Age string
+	Name string `json:"Name"`
+	Age string  `json:"Age"`
 }
 
 func (app *App) ErrorListener() {
@@ -21,9 +22,7 @@ func (app *App) ErrorListener() {
 	go func() {
 		for d := range msgs {
 			log.Printf(" [x] %s", d.Body)
-			body, _ := json.Marshal(d.Body)
-			fmt.Println("JSON BODY", body)
-			decoder := json.NewDecoder(bytes.NewReader(body))
+			decoder := json.NewDecoder(bytes.NewReader(d.Body))
 			err = decoder.Decode(&errorMessage)
 			if err != nil {
 				log.Println("Error while decoding", err)
@@ -31,8 +30,29 @@ func (app *App) ErrorListener() {
 			log.Printf("Got Person %v With Age %v", errorMessage.Name, errorMessage.Age)
 		}
 	}()
-	
+
+
+	// make a function for listener package OnMessage
+	// it will take an argument of a function (which will take arg of type struct of message) and return an error 
+	// and the logic that we will run
+	// we will return the same error/nil if we get any
+  em := ErrorMessage{}
+	onMessage(localLogic, &em)
 }
 
+
+
+type Callback func() error
+type MessageStruct struct{}
+
+func onMessage(callback Callback, messageStructPointer interface{}) error {
+	
+	return nil
+}
+// actual callback function
+func localLogic() error {
+	log.Println("Do something in the db")
+	return nil
+}
 
 

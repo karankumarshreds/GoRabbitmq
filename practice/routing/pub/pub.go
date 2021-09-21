@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
+	// "fmt"
 	"os"
 	"log"
+	"encoding/json"
 	"github.com/streadway/amqp"
 )
 
@@ -41,6 +42,7 @@ func main() {
 		Name: "Karan Kumar",
 		Age: "27",
 	}
+	body, _ := json.Marshal(msg)
 	ch.Publish(
 		"direct_logs",                        // name of exchange 
 		routingKeyFromArgs(os.Args),          // routing key (info|warning|error)
@@ -48,7 +50,7 @@ func main() {
 		false,                                // immediate 
 		amqp.Publishing{
 			ContentType: "text/plain",
-			Body: []byte(fmt.Sprint(msg)),
+			Body: body,
 		},
 	)
 
