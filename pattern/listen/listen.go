@@ -1,11 +1,15 @@
 package listen 
 
 import (
+	"log"
+	"bytes"
+	"encoding/json"
 	"github.com/streadway/amqp"
 )
 
 type Listener struct {
 	Channel *amqp.Channel
+	Msgs <-chan amqp.Delivery
 }
 
 // New will create a new instance of listener 
@@ -15,7 +19,7 @@ func New(ch *amqp.Channel) Listener{
 	}
 }
 
-func (l Listener) Listen(queue string, exchange string, topic string) (msgs <-chan amqp.Delivery, err error) {
+func (l *Listener) Listen(queue string, exchange string, topic string) (err error) {
 	q, err := l.Channel.QueueDeclare(
 		queue,   // queue name 
 		true,    // durable 
@@ -46,7 +50,7 @@ func (l Listener) Listen(queue string, exchange string, topic string) (msgs <-ch
 	)
 	returnIfError(err)
 	
-	msgs, err = l.Channel.Consume(
+	msgs, err := l.Channel.Consume(
 		q.Name,
 		"",    // consumer name (keeping it unique for identity of listener)
 		true,  // auto-ack
@@ -55,10 +59,43 @@ func (l Listener) Listen(queue string, exchange string, topic string) (msgs <-ch
 		false, // no-wait 
 		nil,   // args 
 	)
-	returnIfError(err)
-
-	return msgs, nil	
 	
+	l.Msgs = msgs
+	
+	return err
+}
+
+
+type ErrorMessage struct {
+	Name string `json:"Name"`
+	Age string  `json:"Age"`
+}
+
+type Callback func(interface{}) error
+type MessageStruct interface{}
+
+func (l Listener) OnMessage(callback Callback, msgStruct MessageStruct) error {
+	switch msgStruct.(type) {
+	case ErrorMessage:
+		var errorMessage ErrorMessage
+		 l.iterateMessages(errorMessage, callback)
+	default:
+		return nil
+	}
+	return nil
+}
+
+func (l *Listener) iterateMessages(messageStructInstance interface{}, callback Callback) {
+	go func() {	
+		for d := range l.Msgs {
+			decoder := json.NewDecoder(bytes.NewReader(d.Body))
+			err := decoder.Decode(&messageStructInstance)
+			if err != nil {
+				log.Println("Error while decoding", err)
+			}
+			callback(messageStructInstance)
+		}
+	}()
 }
 
 func returnIfError(err error) (interface{}, error) {
