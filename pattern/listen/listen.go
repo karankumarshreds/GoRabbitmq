@@ -77,7 +77,7 @@ type CBInterface interface {
 	ErrorCallback(errorMessage ErrorMessage)
 }
 
-func (l Listener) OnMessage(callback CBInterface, msgStruct MessageStruct) error {
+func (l *Listener) OnMessage(callback CBInterface, msgStruct MessageStruct) error {
 	switch msgStruct.(type) {
 	case ErrorMessage:
 		var errorMessage ErrorMessage
