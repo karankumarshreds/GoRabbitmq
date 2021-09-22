@@ -73,30 +73,42 @@ type ErrorMessage struct {
 
 type Callback func(interface{}) error
 type MessageStruct interface{}
+type CBInterface interface {
+	ErrorCallback(errorMessage ErrorMessage)
+}
 
-func (l Listener) OnMessage(callback Callback, msgStruct MessageStruct) error {
+func (l Listener) OnMessage(callback CBInterface, msgStruct MessageStruct) error {
 	switch msgStruct.(type) {
 	case ErrorMessage:
 		var errorMessage ErrorMessage
-		 l.iterateMessages(errorMessage, callback)
+		go func() {	
+			for d := range l.Msgs {
+				decoder := json.NewDecoder(bytes.NewReader(d.Body))
+				err := decoder.Decode(&errorMessage)
+				if err != nil {
+					log.Println("Error while decoding", err)
+				}
+				callback.ErrorCallback(errorMessage)
+			}
+		}()
 	default:
 		return nil
 	}
 	return nil
 }
 
-func (l *Listener) iterateMessages(messageStructInstance interface{}, callback Callback) {
-	go func() {	
-		for d := range l.Msgs {
-			decoder := json.NewDecoder(bytes.NewReader(d.Body))
-			err := decoder.Decode(&messageStructInstance)
-			if err != nil {
-				log.Println("Error while decoding", err)
-			}
-			callback(messageStructInstance)
-		}
-	}()
-}
+// func (l *Listener) iterateMessages(messageStructInstance interface{},ch *chan ErrorMessage) {
+// 	go func() {	
+// 		for d := range l.Msgs {
+// 			decoder := json.NewDecoder(bytes.NewReader(d.Body))
+// 			err := decoder.Decode(&messageStructInstance)
+// 			if err != nil {
+// 				log.Println("Error while decoding", err)
+// 			}
+// 			ch <- messageStructInstance
+// 		}
+// 	}()
+// }
 
 func returnIfError(err error) (interface{}, error) {
 	if err != nil {
