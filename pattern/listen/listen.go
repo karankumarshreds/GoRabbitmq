@@ -97,19 +97,6 @@ func (l *Listener) OnMessage(callback CBInterface, msgStruct MessageStruct) erro
 	return nil
 }
 
-// func (l *Listener) iterateMessages(messageStructInstance interface{},ch *chan ErrorMessage) {
-// 	go func() {	
-// 		for d := range l.Msgs {
-// 			decoder := json.NewDecoder(bytes.NewReader(d.Body))
-// 			err := decoder.Decode(&messageStructInstance)
-// 			if err != nil {
-// 				log.Println("Error while decoding", err)
-// 			}
-// 			ch <- messageStructInstance
-// 		}
-// 	}()
-// }
-
 func returnIfError(err error) (interface{}, error) {
 	if err != nil {
 		return nil, err
